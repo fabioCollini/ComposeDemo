@@ -15,19 +15,27 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+class SitesState(
+    val sites: List<String>,
+    val visits: MutableMap<String, Int>,
+)
+
 @HiltViewModel
 class ListViewModel @Inject constructor(
     private val dataStore: DataStore<Preferences>,
 ) : ViewModel() {
 
-    val visits = mutableStateMapOf<String, Int>()
-
-    val sites by mutableStateOf(ALL_SITES)
+    val state by mutableStateOf(
+        SitesState(
+            ALL_SITES,
+            mutableStateMapOf()
+        )
+    )
 
     init {
         viewModelScope.launch {
-            sites.forEach {
-                visits[it] = dataStore.data.map { preferences ->
+            state.sites.forEach {
+                state.visits[it] = dataStore.data.map { preferences ->
                     preferences[intPreferencesKey(it)]
                 }.first() ?: 0
             }
@@ -35,8 +43,8 @@ class ListViewModel @Inject constructor(
     }
 
     fun incrementVisits(url: String) {
-        val newValue = visits.getOrElse(url) { 0 } + 1
-        visits[url] = newValue
+        val newValue = state.visits.getOrElse(url) { 0 } + 1
+        state.visits[url] = newValue
         viewModelScope.launch {
             dataStore.edit { settings ->
                 settings[intPreferencesKey(url)] = newValue
