@@ -25,12 +25,12 @@ fun ListScreen(modifier: Modifier = Modifier) {
 }
 
 @Composable
-private fun Sites(sites: List<WebSite>, modifier: Modifier) {
+private fun Sites(sites: List<WebSiteHolder>, modifier: Modifier) {
     LazyColumn(modifier.padding(vertical = 8.dp)) {
         items(sites) {
             Row(modifier = Modifier
                 .fillMaxWidth()
-                .clickable { it.visits++ }
+                .clickable { it.incrementVisit() }
                 .padding(vertical = 8.dp, horizontal = 16.dp)
             ) {
                 Image(
