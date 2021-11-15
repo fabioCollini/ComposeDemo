@@ -1,7 +1,9 @@
 package com.composedemo
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -19,18 +21,31 @@ import coil.compose.rememberImagePainter
 @Composable
 fun ListScreen(modifier: Modifier = Modifier) {
     val viewModel = hiltViewModel<ListViewModel>()
-    LazyColumn(modifier.padding(16.dp)) {
-        items(viewModel.sites) {
-            Row(modifier = Modifier.padding(vertical = 8.dp)) {
+    Sites(viewModel.sites, modifier)
+}
+
+@Composable
+private fun Sites(sites: List<WebSite>, modifier: Modifier) {
+    LazyColumn(modifier.padding(vertical = 8.dp)) {
+        items(sites) {
+            Row(modifier = Modifier
+                .fillMaxWidth()
+                .clickable { it.visits++ }
+                .padding(vertical = 8.dp, horizontal = 16.dp)
+            ) {
                 Image(
-                    painter = rememberImagePainter("${it}favicon.ico"),
+                    painter = rememberImagePainter(it.icon),
                     modifier = Modifier
                         .size(32.dp)
                         .padding(end = 8.dp),
-                    contentDescription = it,
+                    contentDescription = it.url,
                 )
-                Text(text = it, modifier = Modifier.align(Alignment.CenterVertically))
+                Text(
+                    text = "${it.url} [${it.visits}]",
+                    modifier = Modifier.align(Alignment.CenterVertically),
+                )
             }
         }
     }
 }
+
