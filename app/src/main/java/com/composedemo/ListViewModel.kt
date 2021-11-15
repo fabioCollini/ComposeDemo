@@ -11,6 +11,7 @@ import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
@@ -26,7 +27,7 @@ class ListViewModel @Inject constructor(
     private val dataStore: DataStore<Preferences>,
 ) : ViewModel() {
 
-    var state by mutableStateOf<Lce<SitesState>>(Lce.Loading)
+    var state by mutableStateOf<Lce<SitesState>>(Lce.Loading(null))
 
     init {
         refresh()
@@ -34,7 +35,8 @@ class ListViewModel @Inject constructor(
 
     fun refresh() {
         viewModelScope.launch {
-            state = Lce.Loading
+            state = Lce.Loading(state.data)
+            delay(2000)
             state = Lce.Success(
                 SitesState(
                     ALL_SITES,

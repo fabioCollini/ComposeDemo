@@ -16,23 +16,28 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.rememberImagePainter
+import com.google.accompanist.swiperefresh.SwipeRefresh
+import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 
 @Preview
 @Composable
 fun ListScreen(modifier: Modifier = Modifier) {
     val viewModel = hiltViewModel<ListViewModel>()
-    when (val state = viewModel.state) {
-        is Lce.Error ->
-            Text("Error :(")
-        Lce.Loading ->
-            Text("Loading...")
-        is Lce.Success ->
+    val state = viewModel.state
+    SwipeRefresh(
+        state = rememberSwipeRefreshState(state is Lce.Loading),
+        onRefresh = { viewModel.refresh() },
+    ) {
+        state.data?.let {
             Sites(
-                sites = state.data.urls,
-                visits = state.data.visits,
+                sites = it.urls,
+                visits = it.visits,
                 onClick = viewModel::incrementVisits,
                 modifier = modifier,
             )
+        }
+        if (state is Lce.Error)
+            Text("Error :(")
     }
 }
 

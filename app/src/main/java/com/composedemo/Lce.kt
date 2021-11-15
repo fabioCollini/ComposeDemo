@@ -8,5 +8,5 @@ sealed class Lce<out T> {
 
     data class Error(val throwable: Throwable) : Lce<Nothing>()
 
-    object Loading : Lce<Nothing>()
+    data class Loading<out T>(override val data: T?) : Lce<T>()
 }
