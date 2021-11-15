@@ -16,7 +16,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class SitesState(
-    val sites: List<String>,
+    val urls: List<String>,
     val visits: MutableMap<String, Int>,
 )
 
@@ -34,9 +34,9 @@ class ListViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            state.sites.forEach {
-                state.visits[it] = dataStore.data.map { preferences ->
-                    preferences[intPreferencesKey(it)]
+            state.urls.forEach { url ->
+                state.visits[url] = dataStore.data.map { preferences ->
+                    preferences[intPreferencesKey(url)]
                 }.first() ?: 0
             }
         }

@@ -22,7 +22,7 @@ import coil.compose.rememberImagePainter
 fun ListScreen(modifier: Modifier = Modifier) {
     val viewModel = hiltViewModel<ListViewModel>()
     Sites(
-        sites = viewModel.state.sites,
+        sites = viewModel.state.urls,
         visits = viewModel.state.visits,
         onClick = viewModel::incrementVisits,
         modifier = modifier,
