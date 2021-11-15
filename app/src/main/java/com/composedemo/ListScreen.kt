@@ -21,27 +21,37 @@ import coil.compose.rememberImagePainter
 @Composable
 fun ListScreen(modifier: Modifier = Modifier) {
     val viewModel = hiltViewModel<ListViewModel>()
-    Sites(viewModel.sites, modifier)
+    Sites(
+        sites = viewModel.sites,
+        visits = viewModel.visits,
+        onClick = viewModel::incrementVisits,
+        modifier = modifier,
+    )
 }
 
 @Composable
-private fun Sites(sites: List<WebSiteHolder>, modifier: Modifier) {
+private fun Sites(
+    sites: List<String>,
+    visits: Map<String, Int>,
+    onClick: (String) -> Unit,
+    modifier: Modifier,
+) {
     LazyColumn(modifier.padding(vertical = 8.dp)) {
         items(sites) {
             Row(modifier = Modifier
                 .fillMaxWidth()
-                .clickable { it.incrementVisit() }
+                .clickable { onClick(it) }
                 .padding(vertical = 8.dp, horizontal = 16.dp)
             ) {
                 Image(
-                    painter = rememberImagePainter(it.icon),
+                    painter = rememberImagePainter("${it}favicon.ico"),
                     modifier = Modifier
                         .size(32.dp)
                         .padding(end = 8.dp),
-                    contentDescription = it.url,
+                    contentDescription = it,
                 )
                 Text(
-                    text = "${it.url} [${it.visits}]",
+                    text = "$it [${visits[it]}]",
                     modifier = Modifier.align(Alignment.CenterVertically),
                 )
             }

@@ -20,33 +20,28 @@ class ListViewModel @Inject constructor(
     private val dataStore: DataStore<Preferences>,
 ) : ViewModel() {
 
-    private val visits = mutableStateMapOf<String, Int>()
+    val visits = mutableStateMapOf<String, Int>()
 
     val sites by mutableStateOf(
         listOf(
-            createHolder("https://www.google.it/"),
-            createHolder("https://www.android.com/"),
-            createHolder("https://developer.android.com/"),
-            createHolder("https://androiddevs.it/"),
+            "https://www.google.it/",
+            "https://www.android.com/",
+            "https://developer.android.com/",
+            "https://androiddevs.it/",
         )
     )
 
     init {
         viewModelScope.launch {
             sites.forEach {
-                visits[it.url] = dataStore.data.map { preferences ->
-                    preferences[intPreferencesKey(it.url)]
+                visits[it] = dataStore.data.map { preferences ->
+                    preferences[intPreferencesKey(it)]
                 }.first() ?: 0
             }
         }
     }
 
-    private fun createHolder(url: String) =
-        WebSiteHolder(url, visits) {
-            incrementVisits(url)
-        }
-
-    private fun incrementVisits(url: String) {
+    fun incrementVisits(url: String) {
         val newValue = visits.getOrElse(url) { 0 } + 1
         visits[url] = newValue
         viewModelScope.launch {
