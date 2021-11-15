@@ -3,6 +3,7 @@ package com.composedemo
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
@@ -25,29 +26,33 @@ class ListViewModel @Inject constructor(
     private val dataStore: DataStore<Preferences>,
 ) : ViewModel() {
 
-    val state by mutableStateOf(
-        SitesState(
-            ALL_SITES,
-            mutableStateMapOf()
-        )
-    )
+    var state by mutableStateOf<Lce<SitesState>>(Lce.Loading)
 
     init {
         viewModelScope.launch {
-            state.urls.forEach { url ->
-                state.visits[url] = dataStore.data.map { preferences ->
-                    preferences[intPreferencesKey(url)]
-                }.first() ?: 0
-            }
+            state = Lce.Success(
+                SitesState(
+                    ALL_SITES,
+                    mutableStateMapOf()
+                ).also { newState ->
+                    newState.urls.forEach { url ->
+                        newState.visits[url] = dataStore.data.map { preferences ->
+                            preferences[intPreferencesKey(url)]
+                        }.first() ?: 0
+                    }
+                }
+            )
         }
     }
 
     fun incrementVisits(url: String) {
-        val newValue = state.visits.getOrElse(url) { 0 } + 1
-        state.visits[url] = newValue
-        viewModelScope.launch {
-            dataStore.edit { settings ->
-                settings[intPreferencesKey(url)] = newValue
+        state.data?.let {
+            val newValue = it.visits.getOrElse(url) { 0 } + 1
+            it.visits[url] = newValue
+            viewModelScope.launch {
+                dataStore.edit { settings ->
+                    settings[intPreferencesKey(url)] = newValue
+                }
             }
         }
     }

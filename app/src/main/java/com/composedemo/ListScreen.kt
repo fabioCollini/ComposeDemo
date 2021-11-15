@@ -21,12 +21,19 @@ import coil.compose.rememberImagePainter
 @Composable
 fun ListScreen(modifier: Modifier = Modifier) {
     val viewModel = hiltViewModel<ListViewModel>()
-    Sites(
-        sites = viewModel.state.urls,
-        visits = viewModel.state.visits,
-        onClick = viewModel::incrementVisits,
-        modifier = modifier,
-    )
+    when (val state = viewModel.state) {
+        is Lce.Error ->
+            Text("Error :(")
+        Lce.Loading ->
+            Text("Loading...")
+        is Lce.Success ->
+            Sites(
+                sites = state.data.urls,
+                visits = state.data.visits,
+                onClick = viewModel::incrementVisits,
+                modifier = modifier,
+            )
+    }
 }
 
 @Composable
