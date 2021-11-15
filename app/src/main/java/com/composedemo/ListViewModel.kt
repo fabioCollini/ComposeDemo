@@ -29,7 +29,12 @@ class ListViewModel @Inject constructor(
     var state by mutableStateOf<Lce<SitesState>>(Lce.Loading)
 
     init {
+        refresh()
+    }
+
+    fun refresh() {
         viewModelScope.launch {
+            state = Lce.Loading
             state = Lce.Success(
                 SitesState(
                     ALL_SITES,
