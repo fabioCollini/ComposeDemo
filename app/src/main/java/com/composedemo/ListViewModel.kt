@@ -22,14 +22,7 @@ class ListViewModel @Inject constructor(
 
     val visits = mutableStateMapOf<String, Int>()
 
-    val sites by mutableStateOf(
-        listOf(
-            "https://www.google.it/",
-            "https://www.android.com/",
-            "https://developer.android.com/",
-            "https://androiddevs.it/",
-        )
-    )
+    val sites by mutableStateOf(ALL_SITES)
 
     init {
         viewModelScope.launch {
@@ -49,5 +42,14 @@ class ListViewModel @Inject constructor(
                 settings[intPreferencesKey(url)] = newValue
             }
         }
+    }
+
+    companion object {
+        private val ALL_SITES = listOf(
+            "https://www.google.it/",
+            "https://www.android.com/",
+            "https://developer.android.com/",
+            "https://androiddevs.it/",
+        )
     }
 }
