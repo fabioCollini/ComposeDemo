@@ -1,4 +1,4 @@
-package com.composedemo
+package com.composedemo.utils
 
 sealed class Lce<out T> {
 
