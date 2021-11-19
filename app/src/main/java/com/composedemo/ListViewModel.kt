@@ -22,7 +22,7 @@ class ListViewModel @Inject constructor(
     private val dataStore: DataStore<Preferences>,
 ) : ViewModel() {
 
-    var state by mutableStateOf<Lce<SitesState>>(Lce.Loading(null))
+    var state by mutableStateOf<Lce<SitesState>>(Lce.Loading())
 
     init {
         refresh()
