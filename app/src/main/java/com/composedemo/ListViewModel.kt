@@ -14,6 +14,7 @@ import androidx.lifecycle.viewModelScope
 import com.composedemo.utils.Lce
 import com.composedemo.utils.getInt
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -34,16 +35,18 @@ class ListViewModel @Inject constructor(
 
     fun refresh() {
         viewModelScope.launch {
-            state = Lce.Loading(state.data)
+            state = Lce.Loading()
             state = Lce.Success(
-                SitesState(
-                    mutableStateListOf(elements = ALL_SITES),
-                    mutableStateMapOf(pairs = ALL_SITES.map { it to dataStore.getInt(it) }.toTypedArray()),
-                    sortByName = state.data?.sortByName ?: true,
-                )
+                loadState()
             )
         }
     }
+
+    private suspend fun loadState() = SitesState(
+        mutableStateListOf(elements = ALL_SITES),
+        mutableStateMapOf(pairs = ALL_SITES.map { it to dataStore.getInt(it) }.toTypedArray()),
+        sortByName = state.data?.sortByName ?: true,
+    ).also { delay(2000) }
 
     fun incrementVisits(url: String) {
         state.data?.let {

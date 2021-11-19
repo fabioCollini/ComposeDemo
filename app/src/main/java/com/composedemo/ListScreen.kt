@@ -39,16 +39,17 @@ fun ListScreen(modifier: Modifier = Modifier) {
                     .padding(contentPadding)
                     .fillMaxSize(),
             ) {
-                state.data?.let {
-                    SitesList(
-                        sites = it.urls,
-                        visits = it.visits,
-                        onClick = viewModel::incrementVisits,
-                        modifier = Modifier.fillMaxSize(),
-                    )
+                when (state) {
+                    is Lce.Error -> Text("Error :(")
+                    is Lce.Loading -> {}
+                    is Lce.Success ->
+                        SitesList(
+                            sites = state.data.urls,
+                            visits = state.data.visits,
+                            onClick = viewModel::incrementVisits,
+                            modifier = Modifier.fillMaxSize(),
+                        )
                 }
-                if (state is Lce.Error)
-                    Text("Error :(")
             }
         }
     )
@@ -63,8 +64,8 @@ private fun SitesList(
     modifier: Modifier,
 ) {
     LazyColumn(modifier.padding(vertical = 8.dp)) {
-        items(sites, key = { it }) {
-            Site(it, onClick, visits[it], modifier = Modifier.animateItemPlacement())
+        items(sites) {
+            Site(it, onClick, visits[it])
         }
     }
 }
@@ -94,4 +95,3 @@ private fun Site(
         )
     }
 }
-
