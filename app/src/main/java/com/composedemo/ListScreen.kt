@@ -1,6 +1,5 @@
 package com.composedemo
 
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
@@ -55,7 +54,6 @@ fun ListScreen(modifier: Modifier = Modifier) {
     )
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun SitesList(
     sites: List<String>,
@@ -65,7 +63,7 @@ private fun SitesList(
 ) {
     LazyColumn(modifier.padding(vertical = 8.dp)) {
         items(sites) {
-            Site(it, onClick, visits[it])
+            Site(it, visits[it], onClick)
         }
     }
 }
@@ -73,8 +71,8 @@ private fun SitesList(
 @Composable
 private fun Site(
     url: String,
-    onClick: (String) -> Unit,
     visits: Int?,
+    onClick: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Row(modifier = modifier
