@@ -35,7 +35,7 @@ class ListViewModel @Inject constructor(
 
     fun refresh() {
         viewModelScope.launch {
-            state = Lce.Loading()
+            state = Lce.Loading(state.data)
             state = Lce.Success(
                 loadState()
             )

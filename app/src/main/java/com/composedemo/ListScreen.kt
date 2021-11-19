@@ -1,5 +1,6 @@
 package com.composedemo
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
@@ -38,22 +39,22 @@ fun ListScreen(modifier: Modifier = Modifier) {
                     .padding(contentPadding)
                     .fillMaxSize(),
             ) {
-                when (state) {
-                    is Lce.Error -> Text("Error :(")
-                    is Lce.Loading -> {}
-                    is Lce.Success ->
-                        SitesList(
-                            sites = state.data.urls,
-                            visits = state.data.visits,
-                            onClick = viewModel::incrementVisits,
-                            modifier = Modifier.fillMaxSize(),
-                        )
+                state.data?.let {
+                    SitesList(
+                        sites = it.urls,
+                        visits = it.visits,
+                        onClick = viewModel::incrementVisits,
+                        modifier = Modifier.fillMaxSize(),
+                    )
                 }
+                if (state is Lce.Error)
+                    Text("Error :(")
             }
         }
     )
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun SitesList(
     sites: List<String>,
@@ -62,8 +63,8 @@ private fun SitesList(
     modifier: Modifier,
 ) {
     LazyColumn(modifier.padding(vertical = 8.dp)) {
-        items(sites) {
-            Site(it, visits[it], onClick)
+        items(sites, key = { it }) {
+            Site(it, visits[it], onClick, modifier = Modifier.animateItemPlacement())
         }
     }
 }
