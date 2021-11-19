@@ -3,7 +3,7 @@ package com.composedemo
 class SitesState(
     val urls: MutableList<String>,
     val visits: MutableMap<String, Int>,
-    private var sortByName: Boolean = true,
+    var sortByName: Boolean = true,
 ) {
     init {
         sort()

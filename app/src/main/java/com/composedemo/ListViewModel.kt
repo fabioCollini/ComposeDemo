@@ -38,7 +38,8 @@ class ListViewModel @Inject constructor(
             state = Lce.Success(
                 SitesState(
                     mutableStateListOf(elements = ALL_SITES),
-                    mutableStateMapOf(pairs = ALL_SITES.map { it to dataStore.getInt(it) }.toTypedArray())
+                    mutableStateMapOf(pairs = ALL_SITES.map { it to dataStore.getInt(it) }.toTypedArray()),
+                    sortByName = state.data?.sortByName ?: true,
                 )
             )
         }
